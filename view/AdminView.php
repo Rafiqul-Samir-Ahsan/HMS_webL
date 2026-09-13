@@ -11,6 +11,7 @@ if (!isset($partial)) {
     $todayAppointments = getTodayAppointments();
     $monthlyAppointments = getMonthlyAppointments();
     $weeklyAppointments = getWeeklyAppointments();
+    $adminProfile = getAdminById($_SESSION["user_id"]);
 }
 
 ?>
@@ -589,7 +590,13 @@ if (isset($partial) && $partial == "wardbeds") {
                                 Update
                             </button>
 
-                            <button type="button" class="btn btn-danger" onclick="deleteWardBed(<?php echo $wardBed["ward_bed_id"]; ?>)">
+                           <button type="button" class="btn btn-danger" onclick="
+                                    if (this.closest('tr').querySelector('[name=bed_status]').value == 'Occupied') {
+                                        alert('Occupied bed cannot be deleted.');
+                                        return false;
+                                    }
+                                    deleteWardBed(<?php echo $wardBed['ward_bed_id']; ?>);
+                                    ">
                                 Delete
                             </button>
                         </td>
@@ -616,6 +623,49 @@ if (isset($partial) && $partial == "wardbeds") {
 
 <?php
     return;
+    
+}
+if (isset($partial) && $partial == "changePassword") {
+?>
+
+<div class="page-heading">
+    <h1>Change Password</h1>
+    <p>Update your account password.</p>
+</div>
+
+<div id="passwordMessage"></div>
+
+<div class="content-box">
+
+    <form id="changePasswordForm">
+
+        <input type="hidden" name="password_action" value="change">
+
+        <div class="form-group">
+            <label>Current Password</label>
+            <input type="password" name="current_password" id="currentPassword">
+        </div>
+
+        <div class="form-group">
+            <label>New Password</label>
+            <input type="password" name="new_password" id="newPassword">
+        </div>
+
+        <div class="form-group">
+            <label>Confirm Password</label>
+            <input type="password" name="confirm_password" id="confirmPassword">
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="changeAdminPassword()">
+            Change Password
+        </button>
+
+    </form>
+
+</div>
+
+<?php
+    return;
 }
 
 $adminName = $_SESSION["name"];
@@ -631,7 +681,7 @@ $weeklyAppointments = isset($weeklyAppointments) ? $weeklyAppointments : [];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/admin_dashboard_manage_doctors.css">
+   <link rel="stylesheet" href="../view/css/admin_dashboard_manage_doctors.css?v=2">
     <title>MediCore Admin Dashboard</title>
 </head>
 
@@ -687,17 +737,18 @@ $weeklyAppointments = isset($weeklyAppointments) ? $weeklyAppointments : [];
 
             <p class="sidebar-title">Account</p>
 
-            <a href="#" class="change-password">
+           <a href="#" class="change-password"
+            onclick="loadChangePassword(); return false;">
                 Change Password
             </a>
 
-            <div class="user-box">
-                <strong>
-                    <?php echo htmlspecialchars($adminName); ?>
-                </strong>
-                <br>
-                Admin
-            </div>
+         <div class="user-box" onclick="openAdminProfile()">
+    <strong>
+        <?php echo htmlspecialchars($adminName); ?>
+    </strong>
+    <br>
+    Admin
+</div>
 
         </div>
 
@@ -714,8 +765,8 @@ $weeklyAppointments = isset($weeklyAppointments) ? $weeklyAppointments : [];
             >
 
             <div class="topbar-right">
-                <span class="role-badge">Admin</span>
-                <span><?php echo htmlspecialchars($adminName); ?></span>
+                <span><?php echo date("d M Y"); ?></span>
+              
             </div>
 
         </header>
@@ -801,9 +852,81 @@ $weeklyAppointments = isset($weeklyAppointments) ? $weeklyAppointments : [];
     </main>
 
 </div>
+<div id="profileModal" class="profile-modal">
 
-<script src="js/script.js?v=2"></script>
-<script src="js/admin.js?v=1"></script>
+    <div class="profile-modal-content">
+
+        <button type="button" class="profile-close" onclick="closeAdminProfile()">
+            ×
+        </button>
+
+        <h2>My Profile</h2>
+
+        <form id="adminProfileForm">
+
+            <input type="hidden" name="profile_action" value="update">
+
+            <div class="form-group">
+                <label>Name</label>
+                <input
+                    type="text"
+                    name="name"
+                    id="profileName"
+                    value="<?php echo htmlspecialchars($adminProfile["name"]); ?>"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Age</label>
+                <input
+                    type="number"
+                    name="age"
+                    id="profileAge"
+                    min="1"
+                    max="120"
+                    value="<?php echo htmlspecialchars($adminProfile["age"] ?? ""); ?>"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input
+                    type="text"
+                    name="phone"
+                    id="profilePhone"
+                    value="<?php echo htmlspecialchars($adminProfile["phone"] ?? ""); ?>"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input
+                    type="text"
+                    value="<?php echo htmlspecialchars($adminProfile["email"]); ?>"
+                    readonly
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Role</label>
+                <input type="text" value="Admin" readonly>
+            </div>
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                onclick="updateAdminProfile()"
+            >
+                Save Changes
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+<script src="../view/js/script.js?v=2"></script>
+<script src="../view/js/admin.js?v=2"></script>
 
 </body>
 </html>

@@ -385,5 +385,48 @@ function deleteWardBed($wardBedId)
 
     return mysqli_query($conn, $sql);
 }
+function getAdminById($adminId)
+{
+    global $conn;
 
+    $adminId = (int)$adminId;
+
+    $sql = "SELECT * FROM admin WHERE admin_id='$adminId'";
+    $result = mysqli_query($conn, $sql);
+
+    return mysqli_fetch_assoc($result);
+}
+
+function changeAdminPassword($adminId, $newPassword)
+{
+    global $conn;
+
+    $adminId = (int)$adminId;
+    $newPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+    $sql = "UPDATE admin
+            SET password='$newPassword'
+            WHERE admin_id='$adminId'";
+
+    return mysqli_query($conn, $sql);
+}
+
+
+
+function updateAdminProfile($adminId, $name, $email)
+{
+    global $conn;
+
+    $adminId = (int)$adminId;
+
+    $name = mysqli_real_escape_string($conn, $name);
+    $email = mysqli_real_escape_string($conn, $email);
+
+    $sql = "UPDATE admin
+            SET name='$name',
+                email='$email'
+            WHERE admin_id='$adminId'";
+
+    return mysqli_query($conn, $sql);
+}
 ?>

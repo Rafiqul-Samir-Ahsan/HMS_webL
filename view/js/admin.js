@@ -867,3 +867,128 @@ function showWardMessage(message)
         alert(message);
     }
 }
+function loadChangePassword()
+{
+    var xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function ()
+    {
+        if (this.readyState == 4 && this.status == 200)
+        {
+            var data = JSON.parse(this.responseText);
+
+            if (data.success)
+            {
+                document.getElementById("mainContent").innerHTML = data.html;
+            }
+        }
+    };
+
+    xhttp.open("GET", "../controller/AdminController.php?action=changePassword", true);
+    xhttp.send();
+}
+
+function changeAdminPassword()
+{
+    var currentPassword = document.getElementById("currentPassword").value;
+    var newPassword = document.getElementById("newPassword").value;
+    var confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (currentPassword == "" || newPassword == "" || confirmPassword == "")
+    {
+        alert("All fields are required.");
+        return;
+    }
+
+    if (newPassword.length < 6)
+    {
+        alert("New password must be at least 6 characters.");
+        return;
+    }
+
+    if (newPassword != confirmPassword)
+    {
+        alert("Passwords do not match.");
+        return;
+    }
+
+    var form = document.getElementById("changePasswordForm");
+    var formData = new FormData(form);
+
+    var xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function ()
+    {
+        if (this.readyState == 4 && this.status == 200)
+        {
+            var data = JSON.parse(this.responseText);
+            alert(data.message);
+
+            if (data.success)
+            {
+                showDashboard();
+            }
+        }
+    };
+
+    xhttp.open("POST", "../controller/AdminController.php", true);
+    xhttp.send(formData);
+
+}
+function openAdminProfile()
+{
+    document.getElementById("profileModal").style.display = "flex";
+}
+
+function closeAdminProfile()
+{
+    document.getElementById("profileModal").style.display = "none";
+}
+function updateAdminProfile()
+{
+    var name = document.getElementById("profileName").value.trim();
+    var age = document.getElementById("profileAge").value.trim();
+    var phone = document.getElementById("profilePhone").value.trim();
+
+    if (name == "" || age == "" || phone == "")
+    {
+        alert("Name, age and phone are required.");
+        return;
+    }
+
+    if (isNaN(age) || Number(age) < 1 || Number(age) > 120)
+    {
+        alert("Enter a valid age.");
+        return;
+    }
+
+    if (!/^01[0-9]{9,}$/.test(phone))
+    {
+        alert("Phone must start with 01 and contain at least 11 digits.");
+        return;
+    }
+
+    var form = document.getElementById("adminProfileForm");
+    var formData = new FormData(form);
+
+    var xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function ()
+    {
+        if (this.readyState == 4 && this.status == 200)
+        {
+            var data = JSON.parse(this.responseText);
+
+            alert(data.message);
+
+            if (data.success)
+            {
+                closeAdminProfile();
+                location.reload();
+            }
+        }
+    };
+
+    xhttp.open("POST", "../controller/AdminController.php", true);
+    xhttp.send(formData);
+}

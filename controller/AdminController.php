@@ -77,7 +77,23 @@ if (isset($_GET["action"]) && $_GET["action"] == "wardbeds") {
 
     exit();
 }
+if (isset($_GET["action"]) && $_GET["action"] == "changePassword") {
 
+    $partial = "changePassword";
+
+    ob_start();
+    include __DIR__ . "/../view/AdminView.php";
+    $html = ob_get_clean();
+
+    header("Content-Type: application/json");
+
+    echo json_encode([
+        "success" => true,
+        "html" => $html
+    ]);
+
+    exit();
+}
 if (isset($_POST["doctor_action"])) {
   
     header("Content-Type: application/json");
@@ -717,7 +733,111 @@ if (isset($_POST["ward_action"])) {
         exit();
     }
 }
+if (isset($_POST["profile_action"]) && $_POST["profile_action"] == "update") {
 
+    header("Content-Type: application/json");
+
+    $name = trim($_POST["name"]);
+    $age = trim($_POST["age"]);
+    $phone = trim($_POST["phone"]);
+
+    if ($name == "" || $age == "" || $phone == "") {
+        echo json_encode([
+            "success" => false,
+            "message" => "Name, age and phone are required."
+        ]);
+        exit();
+    }
+
+    if (!ctype_digit($age) || $age < 1 || $age > 120) {
+        echo json_encode([
+            "success" => false,
+            "message" => "Enter a valid age."
+        ]);
+        exit();
+    }
+
+    if (!preg_match('/^01[0-9]{9,}$/', $phone)) {
+        echo json_encode([
+            "success" => false,
+            "message" => "Phone must start with 01 and contain at least 11 digits."
+        ]);
+        exit();
+    }
+
+    $result = updateAdminProfile(
+        $_SESSION["user_id"],
+        $name,
+        $age,
+        $phone
+    );
+
+    if ($result) {
+        $_SESSION["name"] = $name;
+    }
+
+    echo json_encode([
+        "success" => $result,
+        "message" => $result
+            ? "Profile updated successfully."
+            : "Profile could not be updated."
+    ]);
+
+    exit();
+}
+if (isset($_POST["password_action"])) {
+
+    header("Content-Type: application/json");
+
+    $currentPassword = $_POST["current_password"];
+    $newPassword = $_POST["new_password"];
+    $confirmPassword = $_POST["confirm_password"];
+
+    if ($currentPassword == "" || $newPassword == "" || $confirmPassword == "") {
+        echo json_encode([
+            "success" => false,
+            "message" => "All password fields are required."
+        ]);
+        exit();
+    }
+
+    if (strlen($newPassword) < 6) {
+        echo json_encode([
+            "success" => false,
+            "message" => "New password must be at least 6 characters."
+        ]);
+        exit();
+    }
+
+    if ($newPassword != $confirmPassword) {
+        echo json_encode([
+            "success" => false,
+            "message" => "Passwords do not match."
+        ]);
+        exit();
+    }
+
+    $admin = getAdminById($_SESSION["user_id"]);
+
+    if (!$admin || !password_verify($currentPassword, $admin["password"])) {
+        echo json_encode([
+            "success" => false,
+            "message" => "Current password is incorrect."
+        ]);
+        exit();
+    }
+
+    $result = changeAdminPassword($_SESSION["user_id"], $newPassword);
+
+    echo json_encode([
+        "success" => $result,
+        "message" => $result
+            ? "Password changed successfully."
+            : "Password could not be changed."
+    ]);
+
+    exit();
+}
 $totalPatients = getTotalPatients();
 $totalDoctors = getTotalDoctors();
 $todayAppointments = getTodayAppointments();

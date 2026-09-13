@@ -40,11 +40,11 @@ CREATE TABLE IF NOT EXISTS doctor (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
 ");
-
 mysqli_query($conn, "
 CREATE TABLE IF NOT EXISTS admin (
     admin_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
+    age INT NOT NULL,
     phone VARCHAR(20),
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
@@ -52,6 +52,14 @@ CREATE TABLE IF NOT EXISTS admin (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
 ");
+$result = mysqli_query($conn, "SHOW COLUMNS FROM admin LIKE 'age'");
+
+if (mysqli_num_rows($result) == 0) {
+    mysqli_query($conn, "
+        ALTER TABLE admin
+        ADD age INT DEFAULT NULL
+    ");
+}
 
 mysqli_query($conn, "
 CREATE TABLE IF NOT EXISTS ward_bed (
@@ -125,14 +133,12 @@ CREATE TABLE IF NOT EXISTS bill (
 )
 ");
 
-$adminPassword = password_hash("admin123", PASSWORD_DEFAULT);
-
 $admins = [
-    ["Admin One", "01700000001", "admin1@medicore.com"],
-    ["Admin Two", "01700000002", "admin2@medicore.com"],
-    ["Admin Three", "01700000003", "admin3@medicore.com"],
-    ["Admin Four", "01700000004", "admin4@medicore.com"],
-    ["Admin Five", "01700000005", "admin5@medicore.com"]
+    ["Admin One", 30, "01700000001", "admin1@medicore.com"],
+    ["Admin Two", 31, "01700000002", "admin2@medicore.com"],
+    ["Admin Three", 28, "01700000003", "admin3@medicore.com"],
+    ["Admin Four", 32, "01700000004", "admin4@medicore.com"],
+    ["Admin Five", 29, "01700000005", "admin5@medicore.com"]
 ];
 
 foreach ($admins as $admin) {
