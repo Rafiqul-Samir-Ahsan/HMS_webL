@@ -74,6 +74,6 @@
         </div>
     </div>
 </div>
-<script src="../../view/js/script.js"></script>
+<script src="../../controller/js/script.js"></script>
 </body>
 </html>

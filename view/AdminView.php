@@ -145,11 +145,25 @@ if (!isset($partial)) {
                         </td>
 
                         <td>
-                            <input type="text" name="specialization" value="<?php echo htmlspecialchars($doctor["specialization"]); ?>">
+                            <select name="specialization">
+                                <option value="Cardiology" <?php if ($doctor["specialization"] == "Cardiology") echo "selected"; ?>>Cardiology</option>
+                                <option value="Endocrinology" <?php if ($doctor["specialization"] == "Endocrinology") echo "selected"; ?>>Endocrinology</option>
+                                <option value="General Medicine" <?php if ($doctor["specialization"] == "General Medicine") echo "selected"; ?>>General Medicine</option>
+                                <option value="Neurology" <?php if ($doctor["specialization"] == "Neurology") echo "selected"; ?>>Neurology</option>
+                                <option value="Orthopedics" <?php if ($doctor["specialization"] == "Orthopedics") echo "selected"; ?>>Orthopedics</option>
+                                <option value="Pediatrics" <?php if ($doctor["specialization"] == "Pediatrics") echo "selected"; ?>>Pediatrics</option>
+                                <option value="Dermatology" <?php if ($doctor["specialization"] == "Dermatology") echo "selected"; ?>>Dermatology</option>
+                            </select>
                         </td>
 
                         <td>
-                            <input type="text" name="qualification" value="<?php echo htmlspecialchars($doctor["qualification"]); ?>">
+                           <select name="qualification">
+                                <option value="MBBS" <?php if ($doctor["qualification"] == "MBBS") echo "selected"; ?>>MBBS</option>
+                                <option value="MBBS, FCPS" <?php if ($doctor["qualification"] == "MBBS, FCPS") echo "selected"; ?>>MBBS, FCPS</option>
+                                <option value="MBBS, MD" <?php if ($doctor["qualification"] == "MBBS, MD") echo "selected"; ?>>MBBS, MD</option>
+                                <option value="MBBS, MS" <?php if ($doctor["qualification"] == "MBBS, MS") echo "selected"; ?>>MBBS, MS</option>
+                                <option value="MBBS, MRCP" <?php if ($doctor["qualification"] == "MBBS, MRCP") echo "selected"; ?>>MBBS, MRCP</option>
+                            </select>
                         </td>
 
                         <td>
@@ -758,16 +772,23 @@ $weeklyAppointments = isset($weeklyAppointments) ? $weeklyAppointments : [];
 
         <header class="topbar">
 
-            <input
-                type="text"
-                class="search-box"
-                placeholder="Search records, doctors, patients..."
-            >
+            
 
-            <div class="topbar-right">
-                <span><?php echo date("d M Y"); ?></span>
-              
-            </div>
+             <div class="topbar-title">
+        Hospital Management System
+    </div>
+
+   <?php
+    date_default_timezone_set("Asia/Dhaka");
+    ?>
+
+<div class="topbar-clock">
+     <button type="button" class="theme-btn" onclick="toggleDarkMode()"> Mode
+    </button>
+    <span><?php echo date("h:i A"); ?></span>
+    <span class="clock-separator">•</span>
+    <span><?php echo date("d M Y"); ?></span>
+</div>
 
         </header>
 
@@ -862,71 +883,52 @@ $weeklyAppointments = isset($weeklyAppointments) ? $weeklyAppointments : [];
 
         <h2>My Profile</h2>
 
-        <form id="adminProfileForm">
-
-            <input type="hidden" name="profile_action" value="update">
-
-            <div class="form-group">
-                <label>Name</label>
-                <input
-                    type="text"
-                    name="name"
-                    id="profileName"
-                    value="<?php echo htmlspecialchars($adminProfile["name"]); ?>"
-                >
-            </div>
-
-            <div class="form-group">
-                <label>Age</label>
-                <input
-                    type="number"
-                    name="age"
-                    id="profileAge"
-                    min="1"
-                    max="120"
-                    value="<?php echo htmlspecialchars($adminProfile["age"] ?? ""); ?>"
-                >
-            </div>
-
-            <div class="form-group">
-                <label>Phone Number</label>
-                <input
-                    type="text"
-                    name="phone"
-                    id="profilePhone"
-                    value="<?php echo htmlspecialchars($adminProfile["phone"] ?? ""); ?>"
-                >
-            </div>
-
-            <div class="form-group">
-                <label>Email</label>
-                <input
-                    type="text"
-                    value="<?php echo htmlspecialchars($adminProfile["email"]); ?>"
-                    readonly
-                >
-            </div>
-
-            <div class="form-group">
-                <label>Role</label>
-                <input type="text" value="Admin" readonly>
-            </div>
-
-            <button
-                type="button"
-                class="btn btn-primary"
-                onclick="updateAdminProfile()"
+        <div class="form-group">
+            <label>Name</label>
+            <input
+                type="text"
+                value="<?php echo htmlspecialchars($adminProfile["name"]); ?>"
+                readonly
             >
-                Save Changes
-            </button>
+        </div>
 
-        </form>
+        <div class="form-group">
+            <label>Age</label>
+            <input
+                type="text"
+                value="<?php echo htmlspecialchars($adminProfile["age"]); ?>"
+                readonly
+            >
+        </div>
+
+        <div class="form-group">
+            <label>Phone Number</label>
+            <input
+                type="text"
+                value="<?php echo htmlspecialchars($adminProfile["phone"]); ?>"
+                readonly
+            >
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input
+                type="text"
+                value="<?php echo htmlspecialchars($adminProfile["email"]); ?>"
+                readonly
+            >
+        </div>
+
+        <div class="form-group">
+            <label>Role</label>
+            <input type="text" value="Admin" readonly>
+        </div>
 
     </div>
 
 </div>
-<script src="../view/js/script.js?v=2"></script>
-<script src="../view/js/admin.js?v=2"></script>
+<script src="../controller/js/script.js?v=2"></script>
+<script src="../controller/js/admin.js?v=2"></script>
 
 </body>
 </html>

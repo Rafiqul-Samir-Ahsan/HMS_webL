@@ -468,3 +468,66 @@ td input:focus {
     background: #f1f5f4;
     cursor: not-allowed;
 }
+.topbar-title {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: white;
+}
+
+.topbar-clock {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 14px;
+    background: rgba(255, 255, 255, 0.14);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: white;
+}
+
+.clock-separator {
+    opacity: 0.7;
+}
+body.dark-mode {
+    background: #1e1e1e;
+    color: white;
+}
+
+body.dark-mode .sidebar {
+    background: #252525;
+}
+
+body.dark-mode .main-area {
+    background: #1e1e1e;
+}
+
+body.dark-mode .stat-card,
+body.dark-mode .content-box {
+    background: #2d2d2d;
+    color: white;
+}
+body.dark-mode .profile-modal-content {
+    background: #242424;
+    color: #f5f5f5;
+}
+
+body.dark-mode .profile-modal-content label {
+    color: #f5f5f5;
+}
+
+body.dark-mode .profile-modal-content input {
+    background: #333333;
+    color: #ffffff;
+    border-color: #555555;
+}
+
+body.dark-mode .profile-close {
+    color: #ffffff;
+}
+
+body.dark-mode .user-box {
+    background: #292929;
+    color: #ffffff;
+}
